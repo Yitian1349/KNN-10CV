@@ -2,7 +2,7 @@ Package: RPackage
 Type: Package
 Title: KNN Prediction
 Version: 0.1.0
-Author: Yitian
+Author: Yitian,Connor,Michaela
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: Using K Nearest Neighbors method to make predictions for both regression and classification.
     Use four spaces when indenting paragraphs within the Description.

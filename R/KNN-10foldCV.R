@@ -7,6 +7,18 @@
 #' @param Xtest The test data set
 #' @param method The regression or classification
 #' @return The prediction results for the test data
+#' @examples
+#' install.packages("titanic");
+#' library(titanic);
+#' train<-titanic_train;
+#' Xtrain<-train[,-c(2,4,11)];
+#' ytrain<-train[,2];
+#' test<-titanic_test;
+#' test<-test[,-c(3,10)];
+#' Xtrain=na.omit(Xtrain);
+#' test$Age[is.na(test$Age)]=mean(test$Age,na.rm=T);
+#' test$Fare[is.na(test$Fare)]=mean(test$Fare,na.rm=T);
+#' KNN_10CV(Xtrain,ytrain,Xtest=test,method="regression")
 #' @export
 KNN_10CV<-function(Xtrain,ytrain,Xtest,method){
   #2 methods: "regression" and "classification"
@@ -19,8 +31,8 @@ KNN_10CV<-function(Xtrain,ytrain,Xtest,method){
   X.test<-scaled_data[(nrow(Xtrain)+1):nrow(scaled_data),]
   #set seed
   set.seed(123)
-  fold.index <- cut(sample(1:nrow(Xtrain)), breaks=10, labels=FALSE)
-  K.vt <- c(1:100)
+  fold.index <- cut(sample(1:nrow(test)), breaks=10, labels=FALSE)
+  K.vt <- c(1:nrow(test))
   error.k <- rep(0, length(K.vt))
   counter <- 0
   # knn regression
@@ -32,7 +44,7 @@ KNN_10CV<-function(Xtrain,ytrain,Xtest,method){
       mse <- rep(0,10)
       # 10 fold cross validation
       for(i in 1:10){
-        pred.out <- knn.reg(X.train[fold.index!=i,], X.train[fold.index==i,],
+        pred.out <- FNN::knn.reg(X.train[fold.index!=i,], X.train[fold.index==i,],
                             ytrain[fold.index!=i], k=k)
         mse[i] <- mean((pred.out$pred - ytrain[fold.index==i])^2)
       }
@@ -40,7 +52,7 @@ KNN_10CV<-function(Xtrain,ytrain,Xtest,method){
     }
     #find the best k which has the smallest MSE
     real_k<-K.vt[which.min(error.k)]
-    final_pred<-knn.reg(train = X.train, test = X.test, y = ytrain, k = real_k)
+    final_pred<-FNN::knn.reg(train = X.train, test = X.test, y = ytrain, k = real_k)
     return(final_pred)
   }
   #knn classification

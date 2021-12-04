@@ -22,3 +22,14 @@ The prediction results for the test data
 This function can be used for both regression and classification problems
 Using 10-fold cross validation to choose the best k for the model
 }
+\examples{
+train<-titanic::titanic_train;
+Xtrain<-train[,-c(2,4,11)];
+ytrain<-train[,2];
+test<-titanic::titanic_test;
+test<-test[,-c(3,10)];
+Xtrain=na.omit(Xtrain);
+test$Age[is.na(test$Age)]=mean(test$Age,na.rm=T);
+test$Fare[is.na(test$Fare)]=mean(test$Fare,na.rm=T);
+KNN_10CV(Xtrain,ytrain,Xtest=test,method="regression")
+}
